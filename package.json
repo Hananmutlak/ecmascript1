@@ -1,0 +1,26 @@
+{
+  "name": "ecmascript1",
+  "version": "1.0.0",
+
+  
+    "scripts": {
+      "start": "parcel src/index.html",
+      "build": "parcel build src/index.html"
+    }
+  ,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+   "parcel": "^2.0.0"
+  },
+  "dependencies": {
+    "esbuild": "^0.24.2",
+    "nanoid": "^3.3.8",
+    "picocolors": "^1.1.1",
+    "postcss": "^8.5.1",
+    "rollup": "^4.34.3",
+    "source-map-js": "^1.2.1"
+  },
+  "description": ""
+}

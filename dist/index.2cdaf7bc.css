@@ -1,0 +1,24 @@
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+th, td {
+  text-align: left;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+th {
+  cursor: pointer;
+  background-color: #f2f2f2;
+}
+
+input[type="text"] {
+  box-sizing: border-box;
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+}
+/*# sourceMappingURL=index.2cdaf7bc.css.map */
