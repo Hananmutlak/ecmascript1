@@ -1,72 +1,62 @@
-const url = "https://webbutveckling.miun.se/files/ramschema_ht24.json";
+let cours = [];
 
-async function hämtaData() {
+window.onload = () => {
+    loadcours();
+};
+
+document.querySelector("#sok").addEventListener("input", function() {
+    filterData();
+});
+
+async function loadcours() {
     try {
-        const response = await fetch(url);
+        const response = await fetch("https://webbutveckling.miun.se/files/ramschema_ht24.json");
         if (!response.ok) {
-            throw new Error("Något gick fel vid hämtning av data");
+            throw new Error("fel vid hämtning av data..");
         }
-        const data = await response.json();
-        return data;
+        cours = await response.json();
+        printcours(cours);
     } catch (error) {
-        console.error("Fel:", error.message);
-        return [];
+        console.error(error);
+        document.querySelector("#error").innerHTML = "<p>fel vid anslutning - prova igen senare</p>";
     }
 }
 
-function visaData(data) {
-    const tabellBody = document.getElementById("tabell").getElementsByTagName("tbody")[0];
-    tabellBody.innerHTML = "";
+function printcours(data) {
+    const tbody = document.querySelector("#tabell tbody");
+    tbody.innerHTML = ""; // Clear the table body
 
-    data.forEach(kurs => {
-        const rad = tabellBody.insertRow();
-        rad.insertCell().textContent = kurs.code;
-        rad.insertCell().textContent = kurs.coursename;
-        rad.insertCell().textContent = kurs.progression;
+    data.forEach(course => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${course.code}</td>
+            <td>${course.coursename}</td>
+            <td>${course.progression}</td>
+        `;
+        tbody.appendChild(row);
     });
 }
 
-function sökData(data, söktext) {
-    return data.filter(kurs =>
-        kurs.code.toLowerCase().includes(söktext) ||
-        kurs.coursename.toLowerCase().includes(söktext)
+function filterData() {
+    const search = document.querySelector("#sok").value.toLowerCase();
+    const filteredData = cours.filter(course => 
+        course.code.toLowerCase().includes(search) || 
+        course.coursename.toLowerCase().includes(search)
     );
+    printcours(filteredData);
 }
 
-function sorteraData(data, kolumn, riktning = "stigande") {
-    return data.sort((a, b) => {
-        if (a[kolumn] < b[kolumn]) return riktning === "stigande" ? -1 : 1;
-        if (a[kolumn] > b[kolumn]) return riktning === "stigande" ? 1 : -1;
+function sortData(by) {
+    let sortedData = [...cours];
+    sortedData.sort((a, b) => {
+        if (a[by] < b[by]) return -1;
+        if (a[by] > b[by]) return 1;
         return 0;
     });
+    printcours(sortedData);
 }
 
-async function main() {
-    const data = await hämtaData();
-    let filtreradData = [...data];
-
-    visaData(filtreradData);
-
-    document.getElementById("sok").addEventListener("input", (e) => {
-        const söktext = e.target.value.toLowerCase();
-        filtreradData = sökData(data, söktext);
-        visaData(filtreradData);
-    });
-
-    document.getElementById("kod").addEventListener("click", () => {
-        filtreradData = sorteraData(filtreradData, "code");
-        visaData(filtreradData);
-    });
-
-    document.getElementById("namn").addEventListener("click", () => {
-        filtreradData = sorteraData(filtreradData, "coursename");
-        visaData(filtreradData);
-    });
-
-    document.getElementById("progression").addEventListener("click", () => {
-        filtreradData = sorteraData(filtreradData, "progression");
-        visaData(filtreradData);
-    });
-}
-
-main();
+// Add event listeners for sorting
+document.querySelector("#kod").addEventListener("click", () => sortData("code"));
+document.querySelector("#namn").addEventListener("click", () => sortData("coursename"));
+document.querySelector("#progression").addEventListener("click", () => sortData("progression"));
